@@ -1,4 +1,5 @@
 from PIL import Image
+import ImageFilter
 import sys
 import transformation as Transformations
 import demons as Demons
@@ -16,13 +17,6 @@ else:
 	print(original.format, original.size, original.mode)
 
 	modified = Transformations.affine(original, -0.5, 0)
-
-	movingPixels = modified.load()
-	w, h = modified.size
-	for x in range(w):
-		for y in range(h):
-			movingPixels[x, y] = (0, 0, 0)
-
 	modified.show()
 
 	print "The size of the modified image is:"
