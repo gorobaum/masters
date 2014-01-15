@@ -9,6 +9,7 @@ if len(sys.argv) <= 1:
 else:
 	try:
 		original = Image.open(sys.argv[1])
+		original = original.convert("L") # Convert to greyscale
 	except:
 		print "Unable to load image!"
 
