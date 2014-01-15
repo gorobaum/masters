@@ -1,5 +1,6 @@
 from PIL import Image
 import ImageFilter
+import Scipy
 
 def demons(movingImage, staticImage):
 	gradients = findGrad(staticImage)
@@ -30,6 +31,7 @@ def demons(movingImage, staticImage):
 				displVectors[i][1] = 0
 			else:
 				displVectors[i][1] = displVectors[i][1] + (deformedPixels[x, y] - staticPixels[x, y])*gradients[i][1]/divy
+	displVectors = scipy.ndimage.filters.gaussian_filter(displVectors, 1)
 
 
 
