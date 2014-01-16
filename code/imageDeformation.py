@@ -13,12 +13,12 @@ else:
 	except:
 		print "Unable to load image!"
 
-	print "The size of the original image is:"
-	print(original.format, original.size, original.mode)
-
 	modified = Transformations.affine(original, -0.5, 0)
 
 	print "The size of the modified image is:"
 	print(modified.format, modified.size, modified.mode)
-
-	Demons.demons(original, modified)
+	original = original.resize(modified.size)
+	print "The size of the original image is:"
+	print(original.format, original.size, original.mode)
+	original.show()
+	Demons.demons(modified, original)
