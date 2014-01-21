@@ -58,7 +58,8 @@ def findGrad(image):
 	gradX = list(xImage.getdata())
 	gradY = list(yImage.getdata())
 	width, height = image.size
-	aux.showVectorField(width, height, gradX, gradY)
+	aux.showVectorField(width, height, gradX, gradX, "gradientX")
+	aux.showVectorField(width, height, gradY, gradY, "gradientY")
 	grad = zip(gradX, gradY)
 	return grad
 
