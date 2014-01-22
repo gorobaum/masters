@@ -58,6 +58,9 @@ def findGrad(image):
 	for x in range(h):
 		for y in range(w):
 			grad.append([dx[x][y], dy[x][y]])
+	aux.showVectorField(w, h, dx, dy)
+	mag *= 255.0 / numpy.max(mag) # normalize (Q&D)
+	scipy.misc.imsave('sobel.jpg', mag)
 	return grad
 
 def createDisplVectors(w, h):
