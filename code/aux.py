@@ -34,7 +34,7 @@ def getPixel(pixels, width, height, x, y):
 	else:
 		return pixels[x, y]
 
-def showVectorField(width, height, xVec, yVec, title):
+def showVectorField(width, height, xVec, yVec):
 	X,Y = meshgrid(arange(width), arange(height))
 	#1
 	figure()
@@ -44,5 +44,5 @@ def showVectorField(width, height, xVec, yVec, title):
 	dx, dy = r-l, t-b
 	axis([l-0.05*dx, r+0.05*dx, b-0.05*dy, t+0.05*dy])
 
-	title(title)
+	title('teste')
 	show()

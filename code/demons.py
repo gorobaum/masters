@@ -1,6 +1,6 @@
 from PIL import Image
 import ImageFilter
-import scipy.ndimage
+import scipy.ndimage as ndimage
 import time
 import aux
 
@@ -15,9 +15,7 @@ def demons(movingImage, staticImage):
 	displVectors = createDisplVectors(width, height)
 	iteration = 0
 	start_time = time.time()
-	cont = True
-	while cont:
-		cont = False
+	for a in range(100):
 		loop_time = time.time()
 		print 'Iteration number ' + str(iteration)
 		for x in range(width):
@@ -28,8 +26,7 @@ def demons(movingImage, staticImage):
 				miy = y-displVectors[i][1]
 				deformedPixels[x, y] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
 				# update displvector
-				if updateDisplVector(displVectors, gradients, deformedPixels, staticPixels, i, x ,y):
-					cont = True
+				updateDisplVector(displVectors, gradients, deformedPixels, staticPixels, i, x ,y)
 		displVectors = ndimage.filters.gaussian_filter(displVectors, 1)
 		print "iteration ", iteration, "took ", time.time() - loop_time, "seconds."
 		imageName = "result" + str(iteration) + ".jpg"
@@ -37,18 +34,15 @@ def demons(movingImage, staticImage):
 		deformedImage.save(imageName)
 
 def updateDisplVector(displVectors, gradients, deformedPixels, staticPixels, i, x ,y):
-	cont = False
 	div = (pow(gradients[i][0], 2) + pow(gradients[i][1], 2) + pow((deformedPixels[x, y] - staticPixels[x, y]), 2))
 	if div == 0: div = 1e-3
-	newDisplX = displVectors[i][0] + (deformedPixels[x, y] - staticPixels[x, y])*gradients[i][0]/div
-	if newDisplX > 1e-5:
+	vAdd = (deformedPixels[x, y] - staticPixels[x, y])/div
+	newDisplX = vAdd*gradients[i][0]
+	if abs(newDisplX) > 1e-5:
 		displVectors[i][0] = displVectors[i][0] + newDisplX
-		cont = True
-	newDisplY = displVectors[i][1] + (deformedPixels[x, y] - staticPixels[x, y])*gradients[i][1]/div
-	if newDisplY > 1e-5:
+	newDisplY = vAdd*gradients[i][1]
+	if abs(newDisplY) > 1e-5:
 		displVectors[i][1] = displVectors[i][1] + newDisplY
-		cont = True
-	return cont
 
 def findGrad(image):
 	dx = ImageFilter.Kernel((3, 3), (1,0,-1,2,0,-2,1,0,-1), 8, offset=0)
@@ -57,9 +51,6 @@ def findGrad(image):
 	yImage = image.filter(dy)
 	gradX = list(xImage.getdata())
 	gradY = list(yImage.getdata())
-	width, height = image.size
-	aux.showVectorField(width, height, gradX, gradX, "gradientX")
-	aux.showVectorField(width, height, gradY, gradY, "gradientY")
 	grad = zip(gradX, gradY)
 	return grad
 
