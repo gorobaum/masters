@@ -52,9 +52,13 @@ def findGrad(image):
 	dx = ndimage.sobel(im, 0) # horizontal derivative
 	dy = ndimage.sobel(im, 1) # vertical derivative
 	mag = numpy.hypot(dx, dy) # magnitude
-	mag *= 255.0 / numpy.max(mag) # normalize (Q&D)
-	scipy.misc.imsave('sobel.jpg', mag)
-	return list()
+	w, h = image.size
+	grad = list()
+	print w, h
+	for x in range(h):
+		for y in range(w):
+			grad.append([dx[x][y], dy[x][y]])
+	return grad
 
 def createDisplVectors(w, h):
 	displVectors = list()
