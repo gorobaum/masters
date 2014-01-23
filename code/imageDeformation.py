@@ -10,16 +10,16 @@ if len(sys.argv) <= 1:
 else:
 	try:
 		original = Image.open(sys.argv[1])
-		original = original.convert("L") # Convert to greyscale
 	except:
 		print "Unable to load image!"
 
 	modified = aux.deformSin(original)
+	modified.save("../testImages/"+sys.argv[1]+"-m.jpg", "JPEG")
+	print "The size of the original image is:"
+	print(original.format, original.size, original.mode)
 
 	print "The size of the modified image is:"
 	print(modified.format, modified.size, modified.mode)
 
-	print "The size of the original image is:"
-	print(original.format, original.size, original.mode)
 
 	Demons.demons(modified, original)

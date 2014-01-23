@@ -10,7 +10,7 @@ def deformSin(image):
 	w, h = image.size
 	for i in range(w):
 		for j in range(h):
-			newX = i + 4*math.sin(j/16)
+			newX = i + 4*math.sin(j)
 			newY = j
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
 	return deformedImage
@@ -23,7 +23,7 @@ def bilinearInterpolation(imagePixels, x, y, width, height):
 	pixelThree = getPixel(imagePixels, width, height, u, v+1)
 	pixelFour = getPixel(imagePixels, width, height, u+1, v+1)
 
-	interpolation = (u+1-x)*(v+1-y)*pixelOne + (x-u)*(v+1-y)*pixelTwo + (u+1-x)*(y-v)*pixelThree + (x-u)*(y-v)*pixelFour
+	interpolation = (u+1-x)*(v+1-y)*pixelOne*1.0 + (x-u)*(v+1-y)*pixelTwo*1.0 + (u+1-x)*(y-v)*pixelThree*1.0 + (x-u)*(y-v)*pixelFour*1.0
 	return interpolation
 
 def getPixel(pixels, width, height, x, y):
