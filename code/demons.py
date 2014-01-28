@@ -42,21 +42,25 @@ def updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x 
 	div = pow(gradients[i][0], 2) + pow(gradients[i][1], 2) + pow(dif, 2)
 	if div != 0:
 		newDisplX = dif*gradients[i][0]*1.0/div
-		if abs(newDisplX) > 1e-5:
+		if abs(newDisplX) > 0.001:
 			displField[i][0] = displField[i][0] + newDisplX
 		newDisplY = dif*gradients[i][1]*1.0/div
-		if abs(newDisplY) > 1e-5:
+		if abs(newDisplY) > 0.001:
 			displField[i][1] = displField[i][1] + newDisplY
 
 def findGrad(image):
 	im = scipy.misc.fromimage(image)
-	im = im.astype('int32')
+	im = im.astype('float32')
 	dx = ndimage.sobel(im, 0) # horizontal derivative
 	dy = ndimage.sobel(im, 1) # vertical derivative
+	dx *= 1.0/8
+	dy *= 1.0/8
 	sobelX = scipy.misc.toimage(dx)
 	sobelY = scipy.misc.toimage(dy)
 	gradX = list(sobelX.getdata())
 	gradY = list(sobelY.getdata())
+	# width, height = image.size
+	# aux.showVectorField(width, height, gradX, gradX)
 	grad = zip(gradX, gradY)
 	return grad
 
@@ -64,6 +68,6 @@ def createDisplField(w, h):
 	displField = list()
 	for x in range(w):
 		for y in range(h):
-			displField.append([0,0])
+			displField.append([0.0,0.0])
 	return displField
 
