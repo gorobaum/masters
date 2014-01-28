@@ -1,19 +1,17 @@
-from PIL import Image
 import math
+import numpy
 from pylab import *
 from numpy import ma
 
-def deformSin(image):
-	deformedImage = Image.new(image.mode, image.size)
-	imagePixels = image.load()
-	deformedPixels = deformedImage.load()
-	w, h = image.size
-	for i in range(w):
-		for j in range(h):
-			newX = i 
-			newY = j + 4*math.sin(i/16)
+def deformSin(imagePixels):
+	deformedPixels = numpy.ndarray(imagePixels.shape, dtype=int)
+	h, w = imagePixels.shape
+	for i in range(h):
+		for j in range(w):
+			newY = i + 4*math.sin(j/16)
+			newX = j 
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
-	return deformedImage
+	return deformedPixels
 
 def bilinearInterpolation(imagePixels, x, y, width, height):
 	u = math.trunc(x)
@@ -27,12 +25,13 @@ def bilinearInterpolation(imagePixels, x, y, width, height):
 	return interpolation
 
 def getPixel(pixels, width, height, x, y):
+	# print width, height, x, y
 	if x > width-1 or x < 0:
 		return 0.0
 	elif y > height-1 or y < 0:
 		return 0.0
 	else:
-		return pixels[x, y]
+		return pixels[y, x]
 
 def showVectorField(width, height, xVec, yVec):
 	X,Y = meshgrid(arange(width), arange(height))

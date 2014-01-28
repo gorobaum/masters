@@ -1,4 +1,3 @@
-import ImageFilter
 import time
 import aux
 import numpy
@@ -6,16 +5,13 @@ import scipy
 from scipy import ndimage
 from PIL import Image
 
-def demons(movingImage, staticImage):
+def demon(staticPixels, movingPixels):
 	# Compute Gradient Vector for the static image
-	gradients = findGrad(staticImage)
+	gradients = findGrad(staticPixels)
 	# Get the pixels for the static, moving and deformed image
-	staticPixels = staticImage.load()
-	movingPixels = movingImage.load()
-	deformedImage = Image.new(staticImage.mode, staticImage.size, "black")
-	deformedPixels = deformedImage.load()
+	deformedPixels = numpy.ndarray(staticPixels.shape, dtype=int)
 	# Create the displacement field
-	width, height = deformedImage.size
+	height, width = deformedPixels.shape
 	displField = createDisplField(width, height)
 	total_time = 0
 	for iteration in range(100):
@@ -27,18 +23,18 @@ def demons(movingImage, staticImage):
 				# update deformed image
 				mix = x-displField[i][0]
 				miy = y-displField[i][1]
-				deformedPixels[x, y] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
+				deformedPixels[y, x] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
 				# update displvector
 				updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x ,y)
 		displField = ndimage.filters.gaussian_filter(displField, 1)
 		total_time = total_time + time.time() - loop_time
 		print "iteration ", iteration, "took ", time.time() - loop_time, "seconds."
 		imageName = "result" + str(iteration) + ".jpg"
-		deformedImage.save(imageName)
+		scipy.misc.imsave(imageName, deformedPixels)
 	print "Total execution time", total_time
 
 def updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x ,y):
-	dif = (deformedPixels[x, y] - staticPixels[x, y])
+	dif = (deformedPixels[y, x] - staticPixels[y, x])
 	div = pow(gradients[i][0], 2) + pow(gradients[i][1], 2) + pow(dif, 2)
 	if div != 0:
 		newDisplX = dif*gradients[i][0]*1.0/div
@@ -48,19 +44,11 @@ def updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x 
 		if abs(newDisplY) > 0.001:
 			displField[i][1] = displField[i][1] + newDisplY
 
-def findGrad(image):
-	im = scipy.misc.fromimage(image)
-	im = im.astype('float32')
-	dx = ndimage.sobel(im, 0) # horizontal derivative
-	dy = ndimage.sobel(im, 1) # vertical derivative
-	dx *= 1.0/8
-	dy *= 1.0/8
-	sobelX = scipy.misc.toimage(dx)
-	sobelY = scipy.misc.toimage(dy)
-	gradX = list(sobelX.getdata())
-	gradY = list(sobelY.getdata())
-	# width, height = image.size
-	# aux.showVectorField(width, height, gradX, gradX)
+def findGrad(imagePixels):
+	dx = ndimage.sobel(imagePixels, 0) # horizontal derivative
+	dy = ndimage.sobel(imagePixels, 1) # vertical derivative
+	gradX = dx.flatten().tolist()
+	gradY = dy.flatten().tolist()
 	grad = zip(gradX, gradY)
 	return grad
 
@@ -70,4 +58,3 @@ def createDisplField(w, h):
 		for y in range(h):
 			displField.append([0.0,0.0])
 	return displField
-
