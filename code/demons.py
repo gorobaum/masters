@@ -13,12 +13,12 @@ def demon(staticPixels, movingPixels):
 	# Create the displacement field
 	height, width = deformedPixels.shape
 	displField = createDisplField(width, height)
-	total_time = 0
+	total_time = 0.0
 	for iteration in range(100):
 		loop_time = time.time()
 		print 'Iteration number ' + str(iteration)
 		for y in range(height):
-			for x in range(width): 
+			for x in range(width):
 				i = y*width+x
 				# update deformed image
 				mix = x-displField[i][0]
@@ -26,7 +26,7 @@ def demon(staticPixels, movingPixels):
 				deformedPixels[y, x] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
 				# update displvector
 				updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x ,y)
-		displField = ndimage.filters.gaussian_filter(displField, 1)
+		displField = ndimage.filters.gaussian_filter(displField, 0.5)
 		total_time = total_time + time.time() - loop_time
 		print "iteration ", iteration, "took ", time.time() - loop_time, "seconds."
 		imageName = "result" + str(iteration) + ".jpg"
@@ -47,6 +47,9 @@ def updateDisplVector(displField, gradients, deformedPixels, staticPixels, i, x 
 def findGrad(imagePixels):
 	dx = ndimage.sobel(imagePixels, 0) # horizontal derivative
 	dy = ndimage.sobel(imagePixels, 1) # vertical derivative
+	# mag = numpy.hypot(dx, dy)  # magnitude
+	# mag *= 255.0 / numpy.max(mag)  # normalize (Q&D)
+	# scipy.misc.imshow(mag)
 	gradX = dx.flatten().tolist()
 	gradY = dy.flatten().tolist()
 	grad = zip(gradX, gradY)

@@ -4,11 +4,11 @@ from pylab import *
 from numpy import ma
 
 def deformSin(imagePixels):
-	deformedPixels = numpy.ndarray(imagePixels.shape, dtype=int)
+	deformedPixels = numpy.ndarray(imagePixels.shape, dtype=int32)
 	h, w = imagePixels.shape
 	for i in range(h):
 		for j in range(w):
-			newY = i + 4*math.sin(j/16)
+			newY = i + math.sin(j/16)
 			newX = j 
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
 	return deformedPixels
@@ -21,7 +21,7 @@ def bilinearInterpolation(imagePixels, x, y, width, height):
 	pixelThree = getPixel(imagePixels, width, height, u, v+1)
 	pixelFour = getPixel(imagePixels, width, height, u+1, v+1)
 
-	interpolation = (u+1-x)*(v+1-y)*pixelOne*1.0 + (x-u)*(v+1-y)*pixelTwo*1.0 + (u+1-x)*(y-v)*pixelThree*1.0 + (x-u)*(y-v)*pixelFour*1.0
+	interpolation = (u+1-x)*(v+1-y)*pixelOne + (x-u)*(v+1-y)*pixelTwo + (u+1-x)*(y-v)*pixelThree + (x-u)*(y-v)*pixelFour
 	return interpolation
 
 def getPixel(pixels, width, height, x, y):
