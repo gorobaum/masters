@@ -3,6 +3,12 @@ import numpy
 from pylab import *
 from numpy import ma
 
+def sumOfAbsList(list):
+	result = 0.0
+	for i in range(0, len(list)):
+		result += abs(list[i])
+	return result
+
 def deformSin(imagePixels):
 	deformedPixels = numpy.ndarray(imagePixels.shape, dtype=int32)
 	h, w = imagePixels.shape
