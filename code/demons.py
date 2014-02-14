@@ -15,8 +15,6 @@ def demon(staticPixels, movingPixels):
 	displField = createDisplField(width, height)
 	currentDisplacement = createDisplField(width, height)
 	total_time = 0.0
-	fNew = 0.0
-	fOld = 0.0
 	for iteration in range(100):
 		loop_time = time.time()
 		print 'Iteration number ' + str(iteration)
@@ -28,13 +26,19 @@ def demon(staticPixels, movingPixels):
 				miy = y-displField[i][1]
 				deformedPixels[y, x] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
 				# update displvector
-				updateCurrentDisplacement(displField, gradients, deformedPixels, staticPixels, i, x ,y)
+				updateCurrentDisplacement(currentDisplacement, gradients, deformedPixels, staticPixels, i, x ,y)
 		updateDisplFiled(displField, currentDisplacement)
+		saveImages(loop_time, width, height, displField)
 		total_time = total_time + time.time() - loop_time
 		print "iteration ", iteration, "took ", time.time() - loop_time, "seconds."
-		imageName = "result" + str(iteration) + ".jpg"
-		scipy.misc.imsave(imageName, deformedPixels)
 	print "Total execution time", total_time
+
+def saveImages(loop_time, width, height, displField):	
+	imageName = "result" + str(iteration) + ".jpg"
+	vectorFieldName = "VFI-" + iteration
+	xVec, yVec = zip(*displField)
+	aux.saveVectorField(width, height, xVec, yVec, vectorFieldName)
+	scipy.misc.imsave(imageName, deformedPixels)
 
 def updateDisplFiled(displField, currentDisplacement):
 	currentDisplacement = ndimage.filters.gaussian_filter(currentDisplacement, 1.0)
@@ -62,6 +66,7 @@ def findGrad(imagePixels):
 	gradX = dx.flatten().tolist()
 	gradY = dy.flatten().tolist()
 	grad = zip(gradX, gradY)
+	grad = ndimage.filters.gaussian_filter(grad, 1.0)
 	return grad
 
 def createDisplField(w, h):

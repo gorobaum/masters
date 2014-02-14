@@ -5,7 +5,7 @@ import demons
 from scipy import ndimage
 
 if len(sys.argv) <= 2:
-	print "Please pass the image name as an arg"
+	print "Please use as <Original Image> and <Modified Image>"
 	sys.exit()
 else:
 	try:

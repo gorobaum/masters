@@ -39,9 +39,8 @@ def getPixel(pixels, width, height, x, y):
 	else:
 		return pixels[y, x]
 
-def showVectorField(width, height, xVec, yVec):
+def saveVectorField(width, height, xVec, yVec, imageName):
 	X,Y = meshgrid(arange(width), arange(height))
-	#1
 	figure()
 	Q = quiver(X, Y, xVec, yVec)
 	qk = quiverkey(Q, 0.5, 1.05, 1, '')
@@ -49,5 +48,6 @@ def showVectorField(width, height, xVec, yVec):
 	dx, dy = r-l, t-b
 	axis([l-0.05*dx, r+0.05*dx, b-0.05*dy, t+0.05*dy])
 
-	title('teste')
+	title(imageName)
+	savefig(imageName+".jpg")
 	show()
