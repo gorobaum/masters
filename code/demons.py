@@ -15,7 +15,11 @@ def demon(staticPixels, movingPixels):
 	displField = createDisplField(width, height)
 	currentDisplacement = createDisplField(width, height)
 	total_time = 0.0
-	for iteration in range(100):
+	iteration = 1
+	stop = False
+	norm = numpy.ndarray(10, dtype=float)
+	norm.fill(0.0)
+	while not stop:
 		loop_time = time.time()
 		print 'Iteration number ' + str(iteration)
 		for y in range(height):
@@ -32,7 +36,19 @@ def demon(staticPixels, movingPixels):
 		imageName = "result" + str(iteration) + ".jpg"
 		scipy.misc.imsave(imageName, deformedPixels)
 		print "iteration ", iteration, "took ", time.time() - loop_time, "seconds."
+		stop = stopCriteria(norm, displField, currentDisplacement)
+		iteration = iteration + 1
 	print "Total execution time", total_time
+
+def stopCriteria(norm, displField, currentDisplacement):
+	newNorm = aux.sumOfField(displField)/aux.sumOfField(currentDisplacement)
+	if (newNorm - norm[9]) <= 1e-4:
+		return True
+	else:
+		for i in range(9):
+			norm[i+1] = norm[i]
+		norm[0] = newNorm
+		return False
 
 def saveImages(iteration, loop_time, width, height, displField, deformedPixels):	
 	vectorFieldName = "VFI-" + str(iteration)

@@ -3,10 +3,11 @@ import numpy
 from pylab import *
 from numpy import ma
 
-def sumOfAbsList(list):
+def sumOfField(ndarray):
 	result = 0.0
-	for i in range(0, len(list)):
-		result += abs(list[i])
+	for y in range(ndarray.shape[0]):
+		for x in range(ndarray.shape[1]):
+			result = result + abs(ndarray[y][x][0]) + abs(ndarray[y][x][1])
 	return result
 
 def deformSin(imagePixels):
@@ -14,7 +15,7 @@ def deformSin(imagePixels):
 	h, w = imagePixels.shape
 	for i in range(h):
 		for j in range(w):
-			newY = i + 2*math.sin(j/16)
+			newY = i + math.sin(j/8)
 			newX = j 
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
 	return deformedPixels
