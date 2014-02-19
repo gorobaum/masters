@@ -8,7 +8,7 @@ if len(sys.argv) <= 1:
 	sys.exit()
 else:
 	try:
-		original = scipy.misc.imread(sys.argv[1], False)
+		original = scipy.misc.imread(sys.argv[1], True)
 	except:
 		print "Unable to load image!"
 

@@ -14,7 +14,7 @@ def deformSin(imagePixels):
 	h, w = imagePixels.shape
 	for i in range(h):
 		for j in range(w):
-			newY = i + math.sin(j/16)
+			newY = i + 2*math.sin(j/16)
 			newX = j 
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
 	return deformedPixels
@@ -40,14 +40,15 @@ def getPixel(pixels, width, height, x, y):
 		return pixels[y, x]
 
 def saveVectorField(width, height, xVec, yVec, imageName):
-	X,Y = meshgrid(arange(width), arange(height))
+	x = linspace(-1*width/2, width/2, width)
+	y = linspace(-1*height/2, height/2, height)
+	X,Y = meshgrid(x, y)
 	figure()
 	Q = quiver(X, Y, xVec, yVec)
-	qk = quiverkey(Q, 0.5, 1.05, 1, '')
+	qk = quiverkey(Q, 1, 1.05, 0.5, '')
 	l,r,b,t = axis()
 	dx, dy = r-l, t-b
 	axis([l-0.05*dx, r+0.05*dx, b-0.05*dy, t+0.05*dy])
 
 	title(imageName)
 	savefig(imageName+".jpg")
-	show()
