@@ -31,7 +31,7 @@ def demon(staticPixels, movingPixels):
 				# update displvector
 				updateCurrentDisplacement(currentDisplacement, gradients, deformedPixels, staticPixels, x ,y)
 		displField = updateDisplFiled(displField, currentDisplacement)
-		saveImages(iteration, displField)
+		# plotField(iteration, displField)
 		total_time = total_time + time.time() - loop_time
 		imageName = "result" + str(iteration) + ".jpg"
 		scipy.misc.imsave(imageName, deformedPixels)
@@ -50,8 +50,8 @@ def stopCriteria(norm, displField, currentDisplacement):
 		norm[0] = newNorm
 		return False
 
-def saveImages(iteration, displField):	
-	vectorFieldName = "VFI-" + str(iteration)
+def plotField(iteration, displField):	
+	fieldName = "VFI-" + str(iteration)
 	height = displField.shape[0]
 	width = displField.shape[1]
 	xVec = list()
@@ -60,10 +60,9 @@ def saveImages(iteration, displField):
 		for x in range(displField.shape[1]):
 			xVec.append([displField[y][x][0],0])
 			yVec.append([0,displField[y][x][1]])
-	aux.saveVectorField(width, height, xVec, yVec, vectorFieldName)
+	aux.saveVectorField(width, height, xVec, yVec, fieldName)
 
 def updateDisplFiled(displField, currentDisplacement):
-	currentDisplacement = ndimage.filters.gaussian_filter(currentDisplacement, 1.0)
 	displField = displField + currentDisplacement
 	displField = ndimage.filters.gaussian_filter(displField, 1.0)
 	return displField
@@ -89,7 +88,6 @@ def findGrad(imagePixels):
 		for x in range(dx.shape[1]):
 			grad[y][x][0] = dx[y][x]
 			grad[y][x][1] = dy[y][x]
-	grad = ndimage.filters.gaussian_filter(grad, 1.0)
 	return grad
 
 def createDisplField(width, height):
