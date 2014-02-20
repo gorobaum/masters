@@ -31,7 +31,7 @@ def demon(staticPixels, movingPixels):
 				# update displvector
 				updateCurrentDisplacement(currentDisplacement, gradients, deformedPixels, staticPixels, x ,y)
 		displField = updateDisplFiled(displField, currentDisplacement)
-		# saveImages(iteration, loop_time, width, height, displField, deformedPixels)
+		saveImages(iteration, displField)
 		total_time = total_time + time.time() - loop_time
 		imageName = "result" + str(iteration) + ".jpg"
 		scipy.misc.imsave(imageName, deformedPixels)
@@ -50,9 +50,16 @@ def stopCriteria(norm, displField, currentDisplacement):
 		norm[0] = newNorm
 		return False
 
-def saveImages(iteration, loop_time, width, height, displField, deformedPixels):	
+def saveImages(iteration, displField):	
 	vectorFieldName = "VFI-" + str(iteration)
-	xVec, yVec = zip(*displField)
+	height = displField.shape[0]
+	width = displField.shape[1]
+	xVec = list()
+	yVec = list()
+	for y in range(displField.shape[0]):
+		for x in range(displField.shape[1]):
+			xVec.append([displField[y][x][0],0])
+			yVec.append([0,displField[y][x][1]])
 	aux.saveVectorField(width, height, xVec, yVec, vectorFieldName)
 
 def updateDisplFiled(displField, currentDisplacement):
