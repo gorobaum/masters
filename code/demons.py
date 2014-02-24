@@ -31,7 +31,7 @@ def demon(staticPixels, movingPixels):
 				# update displvector
 				updateCurrentDisplacement(currentDisplacement, gradients, deformedPixels, staticPixels, x ,y)
 		displField = updateDisplFiled(displField, currentDisplacement)
-		# plotField(iteration, displField)
+		plotField(iteration, displField)
 		total_time = total_time + time.time() - loop_time
 		imageName = "result" + str(iteration) + ".jpg"
 		scipy.misc.imsave(imageName, deformedPixels)

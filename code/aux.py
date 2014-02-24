@@ -41,14 +41,11 @@ def getPixel(pixels, width, height, x, y):
 		return pixels[y, x]
 
 def saveVectorField(width, height, xVec, yVec, imageName):
-	x = linspace(-1*width/2, width/2, width)
-	y = linspace(-1*height/2, height/2, height)
+	x = linspace(0, width, width+1)
+	y = linspace(0, height, height+1)
 	X,Y = meshgrid(x, y)
 	figure()
-	Q = quiver(X[::3], Y[::3], xVec[::3], yVec[::3], color='r', units='x',
-            linewidths=(2,), edgecolors=('k'), headaxislength=5 )
-	qk = quiverkey(Q, 0.5, 0.03, 1, '')
-	axis([-1*width/8, width/8, -1*height/8, height/8])
+	Q = quiver(X, Y, xVec, yVec)
 
 	title(imageName)
 	savefig(imageName+".jpg")
