@@ -15,7 +15,7 @@ def deformSin(imagePixels):
 	h, w = imagePixels.shape
 	for i in range(h):
 		for j in range(w):
-			newY = i + math.sin(j/16)
+			newY = i + 2*math.sin(j/16)
 			newX = j 
 			deformedPixels[i,j] = bilinearInterpolation(imagePixels, newX, newY, w, h)
 	return deformedPixels
