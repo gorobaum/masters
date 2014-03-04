@@ -1,9 +1,11 @@
 import time
 import aux
+import interpolation
 import numpy
 import scipy
 from scipy import ndimage
 from PIL import Image
+
 
 def demon(staticPixels, movingPixels):
 	# Compute Gradient Vector for the static image
@@ -27,7 +29,7 @@ def demon(staticPixels, movingPixels):
 				# update deformed image
 				mix = x-displField[y][x][0]
 				miy = y-displField[y][x][1]
-				deformedPixels[y, x] = aux.bilinearInterpolation(movingPixels, mix, miy, width, height)
+				deformedPixels[y, x] = interpolation.bilinear(movingPixels, mix, miy, width, height)
 				# update displvector
 				updateCurrentDisplacement(currentDisplacement, gradients, deformedPixels, staticPixels, x ,y)
 		displField = updateDisplFiled(displField, currentDisplacement)
